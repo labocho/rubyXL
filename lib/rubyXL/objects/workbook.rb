@@ -364,6 +364,7 @@ module RubyXL
                    'http://schemas.microsoft.com/office/spreadsheetml/2010/11/main' => 'x15')
 
     attr_accessor :worksheets
+    attr_accessor :pivot_cache_definition_files
     attr_accessor :is_template
 
     def before_write_xml
@@ -380,6 +381,13 @@ module RubyXL
                                     :sheet_id => sheet.sheet_id || (max_sheet_id += 1),
                                     :state    => sheet.state,
                                     :r_id     => rel.id)
+      }
+
+      self.pivot_caches = RubyXL::PivotCaches.new
+      pivot_cache_definition_files.each { |pivot_cache, i|
+        rel = relationship_container.find_by_target(pivot_cache.xlsx_path)
+        pivot_caches << RubyXL::PivotCache.new(:cache_id => pivot_cache.cache_id,
+                                               :r_id     => rel.id)
       }
 
       true
@@ -452,6 +460,7 @@ module RubyXL
       # SheetId's, rId's, etc. are completely unrelated to ordering.
       @worksheets = worksheets
       add_worksheet if @worksheets.empty?
+      @pivot_cache_definition_files = []
 
       @theme                    = RubyXL::Theme.default
       @shared_strings_container = RubyXL::SharedStringsTable.new

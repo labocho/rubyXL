@@ -79,6 +79,13 @@ module RubyXL
         sheet_obj.state = sheet.state
       }
 
+      wb.pivot_caches.each_with_index { |pivot_cache, i|
+        pivot_obj = wb.relationship_container.related_files[pivot_cache.r_id]
+
+        wb.pivot_cache_definition_files[i] = pivot_obj
+        pivot_obj.cache_id = pivot_cache.cache_id
+      }
+
       root
     end
   end

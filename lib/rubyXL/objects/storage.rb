@@ -113,6 +113,8 @@ module RubyXL
     include RubyXL::RelationshipSupport
 
     define_relationship(RubyXL::PivotCacheRecordsFile)
+
+    attr_accessor :cache_id
   end
 
   class PivotTableFile < GenericStorageObject
